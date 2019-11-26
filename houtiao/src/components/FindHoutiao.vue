@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 export default {
   name: 'FindHoutiao',
   data () {
@@ -17,7 +16,7 @@ export default {
   },
   methods: {
     getHoutiao: function () {
-      Vue.http.get('/houtiao_person').then((response) => {
+      this.axios.get('/houtiao_person').then((response) => {
         this.houtiao_name = response.json()
       }, (response) => {}
       )
