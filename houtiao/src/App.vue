@@ -2,15 +2,16 @@
   <div id="app">
     <img src="./assets/logo.png">
     <router-view/>
+    <FindHoutiao></FindHoutiao>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import FindHoutiao from './components/FindHoutiao'
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    FindHoutiao
   }
 }
 </script>
