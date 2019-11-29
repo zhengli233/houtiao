@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+
 Vue.prototype.axios = axios
 Vue.use(VueAxios, axios)
 Vue.use(ElementUI)

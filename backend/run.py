@@ -1,22 +1,42 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, jsonify, request
+from mysql import MySQLCommand
 
 APP = Flask(
     __name__, static_folder='../houtiao'
 )
 
-@APP.route('/')
-def home():
-    '''
-    主页
-    '''
-    return render_template('index.html')
+db = MySQLCommand()
 
-@APP.route('/houtiao_person', methods=['GET', 'POST'])
+@APP.route('/houtiao_person', methods=['GET'])
 def showHoutiao():
-    rtn = {
-        'name': 'Hua Xiaocheng houtiao'
-    }
+    results = db.getAll()
+    APP.logger.info(results)
+    rtn = []
+    for row in results:
+        json = {
+            'name': row[0],
+            'level': row[1],
+            'time': row[2]
+        }
+        rtn.append(json)
+    
     return jsonify(rtn)
 
+@APP.route('/write_houtiao_name', methods=['POST'])
+def writeHoutiao():
+    json = request.json
+    name = json['name']
+    level = json['level']
+    return db.write2Table(name=name, level=level)
+    
+
+@APP.route('/delete_houtiao', methods=['POST'])
+def deleteHoutiao():
+    json = request.json
+    name = json['name']
+    return db.deleteRow(name=name)
+    
+
 if __name__ == '__main__':
+    db.connectMysql()
     APP.run(debug=True, host='127.0.0.1')
