@@ -19,6 +19,11 @@ export default new Router({
       path: '/activity',
       name: 'activity',
       component: resolve => require(['@/pages/activity'], resolve)
+    },
+    {
+      path: '/target',
+      name: 'target',
+      component: resolve => require(['@/pages/target'], resolve)
     }
   ]
 })
