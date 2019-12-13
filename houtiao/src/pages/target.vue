@@ -12,7 +12,9 @@
       <el-table-column prop="badge" label="徽章">
       </el-table-column>
     </el-table>
-    <p class="title">除武器外，各部位泰波尔斯升级到普雷后提升对比</p>
+    <div class="title">
+      <span>除武器外，各部位泰波尔斯升级到普雷后提升对比</span>
+    </div>
     <el-row :gutter="0" class="picGroup">
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
         <el-image class="pic" src="../../static/images/order_leather.png"></el-image>
@@ -52,10 +54,14 @@ export default {
 <style scoped>
   .title {
     text-align: center;
-    margin: 20px 100px;
+    margin: 20px 0;
     font-size: 16px;
     font-weight: bold;
     line-height: 32px;
+  }
+  .title span {
+    display: inline-block;
+    padding: 0 300px;
     border-bottom: 1px solid #ccc;
   }
   .picGroup {
