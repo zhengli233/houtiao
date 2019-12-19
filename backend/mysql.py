@@ -12,10 +12,11 @@ class MySQLCommand(object):
     def connectMysql(self):
         try:
             self.conn = pymysql.connect(
-                host=self.host,  
+                #host=self.host,  
                 user=self.user,
                 db=self.db)
             self.cursor = self.conn.cursor()
+            print('connect database success.')
         except:
             print('connect mysql error.')
 
@@ -63,7 +64,7 @@ class MySQLCommand(object):
             cursor.execute(cmd)
             return cursor.fetchall()
         except:
-            print('read table failed.')
+            print('getAll(): read table failed.')
             return 'failed'
 
     def deleteRow(self, name):

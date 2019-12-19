@@ -6,6 +6,7 @@ APP = Flask(
 )
 
 db = MySQLCommand()
+db.connectMysql()
 
 @APP.route('/houtiao_person', methods=['GET'])
 def showHoutiao():
@@ -37,6 +38,5 @@ def deleteHoutiao():
     return db.deleteRow(name=name)
     
 
-if __name__ == '__main__':
-    db.connectMysql()
-    APP.run(debug=True, host='127.0.0.1')
+if __name__ == '__main__':    
+    APP.run(host='127.0.0.1', port=8000)
