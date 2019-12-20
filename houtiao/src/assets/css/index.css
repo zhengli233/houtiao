@@ -40,3 +40,121 @@
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
         background-color: #666;
     }
+/*material css by tornorroyv*/
+.addAndSearch {
+  margin: 20px;
+}
+.searchBox {
+  text-align: right;
+}
+.searchForm .el-form-item {
+  display: inline-block;
+  margin-left: 5px;
+}
+.dialogForm .el-form-item__label {
+  width: 30%;
+  text-align: right;
+}
+.dialogForm .el-form-item__content {
+  width: 60%;
+  text-align: left;
+  float: left;
+}
+.dialogForm .el-form-item.btnBox {
+  margin-bottom: 0;
+}
+.dialogForm .el-form-item.btnBox .el-form-item__content {
+  padding-top: 20px;
+  width: 100%;
+  text-align: center;
+}
+.materialAndUser {
+  margin: 20px;
+  overflow: auto;
+}
+.userList {
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.15);
+}
+.userListItem {
+  float: left;
+  text-align: center;
+  height: 50px;
+  min-width: 410px;
+}
+.userListItemFirst {
+  min-width: 230px;
+}
+.userList .userListItem:nth-child(2n) {
+  background: rgba(0, 0, 0, 0.03);
+}
+.userList .userListItem:nth-child(2n + 1) {
+  background: rgba(0, 0, 0, 0.06);
+}
+.userListItem > span {
+  font-size: 16px;
+  line-height: 50px;
+}
+.materialList {
+  overflow: hidden;
+}
+.materialListItem {
+  float: left;
+  text-align: center;
+  height: 50px;
+  min-width: 410px;
+}
+.materialListItemFirst {
+  min-width: 230px;
+}
+.materialList:nth-child(2n) {
+  background: rgba(0, 0, 0, 0.03);
+}
+.materialList:nth-child(2n + 1) {
+  background: rgba(0, 0, 0, 0.06);
+}
+.materialList .materialListItem:nth-child(2n) {
+  background: rgba(0, 0, 0, 0.03);
+}
+.materialList .materialListItem:nth-child(2n + 1) {
+  background: rgba(0, 0, 0, 0.06);
+}
+.materialListItem > span {
+  font-size: 14px;
+  line-height: 50px;
+}
+.materialDetail {
+  height: 100%;
+}
+.materialDetail .title {
+  font-size: 14px;
+  line-height: 50px;
+  margin-left: 20px;
+}
+.materialDetail .value {
+  margin: 11px 0;
+}
+.materialDetail .btn {
+  margin: 11px 10px 11px 0;
+  float: right;
+  display: none;
+}
+.materialListItem .btn {
+  margin: 11px 10px 11px 0;
+  float: right;
+  display: none;
+}
+.materialDetail .value.el-input-number--mini {
+  width: 80px;
+}
+.materialDetail .value.el-input-number--mini .el-input__inner {
+  padding-left: 5px;
+  padding-right: 35px;
+}
+.dialogForm .el-input-number {
+  width: 100%;
+}
+.materialListItem:hover .btn {
+  display: block;
+}
+/*material css by tornorroyv*/
