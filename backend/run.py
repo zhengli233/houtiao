@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from mysql import MySQLCommand
 
 APP = Flask(
-    __name__, static_folder='../houtiao'
+    __name__
 )
 
 db = MySQLCommand()

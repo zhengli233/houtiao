@@ -4,7 +4,8 @@ class MySQLCommand(object):
     # 类的初始化
     def __init__(self):
         self.host = 'localhost'
-        self.user = 'zhengli'  # 用户名
+        self.user = 'houtiaowang'  # 用户名
+        self.password = 'houtiao'  # 密码
         self.db = 'playground' # 库
         self.table = 'houtiao_people'  # 表
 
@@ -12,8 +13,9 @@ class MySQLCommand(object):
     def connectMysql(self):
         try:
             self.conn = pymysql.connect(
-                #host=self.host,  
+                host=self.host,  
                 user=self.user,
+                password=self.password,
                 db=self.db)
             self.cursor = self.conn.cursor()
             print('connect database success.')
