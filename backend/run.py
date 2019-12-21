@@ -1,16 +1,46 @@
 from flask import Flask, jsonify, request
-from mysql import MySQLCommand
+from mysql import MySQL, Error
 
 APP = Flask(
     __name__
 )
 
-db = MySQLCommand()
-db.connectMysql()
+DB = MySQL()
+
+
+@APP.route('/material/get', methods=['GET'])
+def material_get():
+    json = request.json
+    id = json['id']
+    sql = 'SELECT * from matrial WHERE id=%s'%(id)
+    rtn = []
+    try:
+        DB.execute_sql_command(sql)
+    except Error as e:
+        json = {
+            'success': False,
+            'errorMessage': str(e),
+            'data': {}
+        }
+        rtn.append(json)
+        return rtn
+
+
+    json = {
+            'success': True,
+            'errorMessage': '',
+            'data': {
+                'name': DB.cursor.fetchall()[0][0]
+            }
+        }
+    rtn.append(json)
+    return rtn
+
+
 
 @APP.route('/houtiao_person', methods=['GET'])
-def showHoutiao():
-    results = db.getAll()
+def show_houtiao():
+    results = DB.getAll()
     APP.logger.info(results)
     rtn = []
     for row in results:
@@ -24,18 +54,18 @@ def showHoutiao():
     return jsonify(rtn)
 
 @APP.route('/write_houtiao_name', methods=['POST'])
-def writeHoutiao():
+def write_houtiao():
     json = request.json
     name = json['name']
     level = json['level']
-    return db.write2Table(name=name, level=level)
+    return DB.write2Table(name=name, level=level)
     
 
 @APP.route('/delete_houtiao', methods=['POST'])
-def deleteHoutiao():
+def delete_houtiao():
     json = request.json
     name = json['name']
-    return db.deleteRow(name=name)
+    return DB.deleteRow(name=name)
     
 
 if __name__ == '__main__':    

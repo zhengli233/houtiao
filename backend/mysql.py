@@ -1,16 +1,23 @@
 import pymysql
+from DBUtils.PersistentDB import PersistentDB
 
-class MySQLCommand(object):
-    # 类的初始化
+class Error(Exception):
+    '''数据库错误'''
+    pass
+
+
+
+class MySQL(object):
+    '''用来操作数据库的类'''
     def __init__(self):
         self.host = 'localhost'
         self.user = 'houtiaowang'  # 用户名
         self.password = 'houtiao'  # 密码
         self.db = 'playground' # 库
-        self.table = 'houtiao_people'  # 表
+        self.table = 'houtiao_people'
+        self._connect_db()
 
-    # 链接数据库
-    def connectMysql(self):
+    def _connect_db(self):
         try:
             self.conn = pymysql.connect(
                 host=self.host,  
@@ -18,21 +25,32 @@ class MySQLCommand(object):
                 password=self.password,
                 db=self.db)
             self.cursor = self.conn.cursor()
-            print('connect database success.')
-        except:
-            print('connect mysql error.')
+        except pymysql.Error as error:
+            print(str(error))
+            raise Error(str(error))
 
-    def getCursor(self):
+    def renew_cursor(self):
+        '''更新数据库游标'''
         if self.conn.open:
             self.conn.close()
-        self.connectMysql()
-        return self.cursor
+        self._connect_db()
+
+    def execute_sql_command(self, sql_command):
+        '''执行sql语句，返回当前游标'''
+        try:
+            self.renew_cursor()
+            self.cursor.execute(sql_command)
+            self.conn.commit()
+        except pymysql.Error as error:
+            print(str(error))
+            self.conn.rollback()
+            raise Error(str(error))
 
     def write2Table(self, name, level):
         cmd = 'insert into %s (name, level, time) values ("%s", "%s", now());'%(self.table, name, level)
         try:
-            cursor = self.getCursor()
-            cursor.execute(cmd)
+            self.renew_cursor()
+            self.cursor.execute(cmd)
             self.conn.commit()
         except:
             print('insert table failed.')
@@ -42,7 +60,7 @@ class MySQLCommand(object):
     def getNames(self):
         cmd = 'select name from %s' %(self.table)
         try:
-            cursor = self.getCursor()
+            cursor = self.renew_cursor()
             cursor.execute(cmd)
             return cursor.fetchall()
         except:
@@ -52,7 +70,7 @@ class MySQLCommand(object):
     def getLevel(self, name):
         cmd = 'select level from %s where name=%s'%(self.table, name)
         try:
-            cursor = self.getCursor()
+            cursor = self.renew_cursor()
             cursor.execute(cmd)
             return cursor.fetchall()
         except:
@@ -62,7 +80,7 @@ class MySQLCommand(object):
     def getAll(self):
         cmd = 'select * from %s'%(self.table)
         try:
-            cursor = self.getCursor()
+            self.renew_cursor()
             cursor.execute(cmd)
             return cursor.fetchall()
         except:
@@ -72,7 +90,7 @@ class MySQLCommand(object):
     def deleteRow(self, name):
         cmd = 'delete from %s where name=\"%s\"'%(self.table, name)
         try:
-            cursor = self.getCursor()
+            cursor = self.renew_cursor()
             cursor.execute(cmd)
             self.conn.commit()
             return 'ok'
