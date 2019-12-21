@@ -35,7 +35,14 @@ axios.interceptors.request.use(config => {
 
 // 响应拦截
 axios.interceptors.response.use((response) => {
-  return response
+  if (response.data.success === false) {
+    Message({
+      type: 'error',
+      message: response.data.errorMessage
+    })
+  } else {
+    return response
+  }
 }, function (error) {
   if (axios.isCancel(error)) { // 为了终结promise链 就是实际请求不会走到.catch(rej=>{});这样就不会触发错误提示之类了
     return new Promise(() => {})

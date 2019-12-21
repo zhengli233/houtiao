@@ -24,6 +24,11 @@ export default new Router({
       path: '/target',
       name: 'target',
       component: resolve => require(['@/pages/target'], resolve)
+    },
+    {
+      path: '/material',
+      name: 'material',
+      component: resolve => require(['@/pages/material'], resolve)
     }
   ]
 })
