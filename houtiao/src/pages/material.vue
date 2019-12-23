@@ -177,23 +177,23 @@ export default {
     search: function (name) {
       this.$refs['searchForm'].validate((valid) => {
         if (valid) {
-          // this.searchName = name
-          // this.isLoading = true
-          // this.axios.get('/api/material/list?name=' + this.searchName).then(res => {
-          //   console.log('材料列表', res)
-          //   this.materialList = res.data.data.materialList
-          //   this.userList = res.data.data.userList
-          //   this.isLoading = false
-          // }).catch(err => {
-          //   console.log('材料列表出错', err)
-          //   this.isLoading = false
-          // })
-          this.materialList = [
-            {id: 1, name: '反物质粒子', requirementList: [{userId: 1, requiredNumber: 100, ownedNumber: 50}, {userId: 2, requiredNumber: 120, ownedNumber: 70}]},
-            {id: 2, name: '苍穹碎片', requirementList: [{userId: 1, requiredNumber: 300, ownedNumber: 200}]},
-            {id: 3, name: '精炼的时空石', requirementList: [{userId: 1, requiredNumber: 10, ownedNumber: 6}, {userId: 2, requiredNumber: 8, ownedNumber: 4}]}
-          ]
-          this.userList = [{id: 1, name: 'lz'}, {id: 2, name: 'hxc'}]
+          this.searchName = name
+          this.isLoading = true
+          this.axios.get('/api/material/list?name=' + this.searchName).then(res => {
+            console.log('材料列表', res)
+            this.materialList = res.data.data.materialList
+            this.userList = res.data.data.userList
+            this.isLoading = false
+          }).catch(err => {
+            console.log('材料列表出错', err)
+            this.isLoading = false
+          })
+          // this.materialList = [
+          //   {id: 1, name: '反物质粒子', requirementList: [{userId: 1, requiredNumber: 100, ownedNumber: 50}, {userId: 2, requiredNumber: 120, ownedNumber: 70}]},
+          //   {id: 2, name: '苍穹碎片', requirementList: [{userId: 1, requiredNumber: 300, ownedNumber: 200}]},
+          //   {id: 3, name: '精炼的时空石', requirementList: [{userId: 1, requiredNumber: 10, ownedNumber: 6}, {userId: 2, requiredNumber: 8, ownedNumber: 4}]}
+          // ]
+          // this.userList = [{id: 1, name: 'lz'}, {id: 2, name: 'hxc'}]
         } else {
           this.$message({
             type: 'error',
