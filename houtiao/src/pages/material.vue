@@ -283,8 +283,8 @@ export default {
               type: 'success',
               message: '修改成功'
             })
-            this.$refs['addForm'].resetFields()
-            this.addFormVisible = false
+            this.$refs['editForm'].resetFields()
+            this.editFormVisible = false
             this.search(this.searchName)
             this.isLoading = false
           }).catch(err => {
