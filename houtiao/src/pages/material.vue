@@ -40,8 +40,8 @@
             <div class="materialDetail" v-if="item.requirementList.find(i => i.userId === it.id) !== undefined">
               <span class="title">需要：</span><el-input-number class="value" v-model="item.requirementList.find(i => i.userId === it.id).requiredNumber" :precision="0" :step="1" :min="0" :max="99999" size="mini" controls-position="right"></el-input-number>
               <span class="title">已有：</span><el-input-number class="value" v-model="item.requirementList.find(i => i.userId === it.id).ownedNumber" :precision="0" :step="1" :min="0" :max="99999" size="mini" controls-position="right"></el-input-number>
-              <el-button class="btn" icon="el-icon-delete" type="danger" plain @click="delMaterial(item.id)" :loading="isLoading" size="mini"></el-button>
-              <el-button class="btn" icon="el-icon-edit" type="primary" plain @click="editMaterial(item.id, item.requirementList.find(i => i.userId === it.id).requiredNumber, item.requirementList.find(i => i.userId === it.id).ownedNumber)" :loading="isLoading" size="mini"></el-button>
+              <el-button class="btn" icon="el-icon-delete" type="danger" plain @click="delMaterial(it.id, item.id)" :loading="isLoading" size="mini"></el-button>
+              <el-button class="btn" icon="el-icon-edit" type="primary" plain @click="editMaterial(item.id, item.requirementList.find(i => i.userId === it.id).requiredNumber, item.requirementList.find(i => i.userId === it.id).ownedNumber, it.id)" :loading="isLoading" size="mini"></el-button>
             </div>
             <div class="materialDetail" v-else>
               <el-button class="btn" icon="el-icon-plus" type="primary" plain @click="showAddMaterial(it.id, item.id, it.name, item.name)" :loading="isLoading" size="mini"></el-button>
@@ -375,9 +375,9 @@ export default {
       })
     },
     // 修改用户材料需求
-    editMaterial: function (id, required, owned) {
+    editMaterial: function (id, required, owned, userId) {
       this.isLoading = true
-      this.axios.post('/api/material/updateRequirement', {id: id, requiredNumber: required, ownedNumber: owned}).then(res => {
+      this.axios.post('/api/material/updateRequirement', {materialId: id, requiredNumber: required, ownedNumber: owned, userId: userId}).then(res => {
         console.log('修改用户材料需求', res)
         this.$message({
           type: 'success',
@@ -391,14 +391,14 @@ export default {
       })
     },
     // 删除用户材料需求
-    delMaterial: function (id) {
+    delMaterial: function (userId, materialId) {
       this.$confirm('确认删除这条记录吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.isLoading = true
-        this.axios.post('/api/material/removeRequirement?id=' + id).then(res => {
+        this.axios.post('/api/material/removeRequirement', {userId: userId, materialId: materialId}).then(res => {
           console.log('删除用户材料需求', res)
           this.$message({
             type: 'success',

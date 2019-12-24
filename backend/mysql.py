@@ -23,7 +23,7 @@ class MySQL(object):
                 user=self.user,
                 password=self.password,
                 db=self.db)
-            self.cursor = self.conn.cursor()
+            self.cursor = self.conn.cursor(pymysql.cursors.DictCursor)
         except pymysql.Error as error:
             print(str(error))
             raise Error(str(error))
@@ -34,23 +34,26 @@ class MySQL(object):
             self.conn.close()
         self._connect_db()
 
-    def execute_sql_command(self, sql_command):
+    def execute_sql_command(self, sql_command, info=None):
         '''执行sql语句，返回当前游标'''
         try:
             self.renew_cursor()
-            self.cursor.execute(sql_command)
+            self.cursor.execute(sql_command, info)
             self.conn.commit()
         except pymysql.Error as error:
             print(str(error))
             self.conn.rollback()
             raise Error(str(error))
 
-    def execute_sql_transaction(self, sql_commands):
+    def execute_sql_transaction(self, sql_commands, info_list=None):
         '''执行一组命令组成的事务'''
         try:
             self.renew_cursor()
-            for sql_command in sql_commands:
-                self.cursor.execute(sql_command)
+            for index, sql_command in enumerate(sql_commands):
+                if(info_list == None):
+                    self.cursor.execute(sql_command)
+                else:
+                    self.cursor.execute(sql_command, info_list[index])
             self.conn.commit()
         except pymysql.Error as error:
             print(str(error))
