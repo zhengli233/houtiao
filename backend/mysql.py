@@ -1,5 +1,4 @@
 import pymysql
-from DBUtils.PersistentDB import PersistentDB
 
 class Error(Exception):
     '''数据库错误'''
@@ -46,58 +45,17 @@ class MySQL(object):
             self.conn.rollback()
             raise Error(str(error))
 
-    def write2Table(self, name, level):
-        cmd = 'insert into %s (name, level, time) values ("%s", "%s", now());'%(self.table, name, level)
+    def execute_sql_transaction(self, sql_commands):
+        '''执行一组命令组成的事务'''
         try:
             self.renew_cursor()
-            self.cursor.execute(cmd)
+            for sql_command in sql_commands:
+                self.cursor.execute(sql_command)
             self.conn.commit()
-        except:
-            print('insert table failed.')
-            self.conn.rollback()  
-            return 'failed'           
-
-    def getNames(self):
-        cmd = 'select name from %s' %(self.table)
-        try:
-            cursor = self.renew_cursor()
-            cursor.execute(cmd)
-            return cursor.fetchall()
-        except:
-            print('read table failed.')
-            return 'failed'        
-
-    def getLevel(self, name):
-        cmd = 'select level from %s where name=%s'%(self.table, name)
-        try:
-            cursor = self.renew_cursor()
-            cursor.execute(cmd)
-            return cursor.fetchall()
-        except:
-            print('read table failed.')
-            return 'failed' 
-
-    def getAll(self):
-        cmd = 'select * from %s'%(self.table)
-        try:
-            self.renew_cursor()
-            cursor.execute(cmd)
-            return cursor.fetchall()
-        except:
-            print('getAll(): read table failed.')
-            return 'failed'
-
-    def deleteRow(self, name):
-        cmd = 'delete from %s where name=\"%s\"'%(self.table, name)
-        try:
-            cursor = self.renew_cursor()
-            cursor.execute(cmd)
-            self.conn.commit()
-            return 'ok'
-        except:
-            print('delete table failed')
+        except pymysql.Error as error:
+            print(str(error))
             self.conn.rollback()
-            return 'failed' 
+            raise Error(str(error))
 
 '''
 if __name__ == '__main__':
