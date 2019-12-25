@@ -20,26 +20,23 @@ def error_json(e):
 def get_material_name():
     material_id = request.args.get('id')
     sql = 'SELECT name from material WHERE id=%s'
-    rtn = []
     try:
         DB.execute_sql_command(sql, material_id)
     except Error as e:
         json = error_json(e)
-        rtn.append(json)
         print(str(e))
-        return jsonify(rtn)
+        return jsonify(json)
 
-    result = DB.cursor.fetchall()
-    print(result)
+    result = DB.cursor.fetchone()
     json = {
         'success': True,
         'errorMessage': '',
         'data': {
-            'name': result[0]['name']
+            'id': material_id,
+            'name': result['name']
         }
     }
-    rtn.append(json)
-    return jsonify(rtn)
+    return jsonify(json)
 
 @APP.route('/material/list', methods=['GET'])
 def get_material_list():
@@ -118,11 +115,10 @@ def get_material_list():
 
 @APP.route('/material/update', methods=['POST'])
 def update_material_name():
-    material_id = request.json['id']
-    material_name = request.json['name']
-    sql = 'UPDATE material SET name=%s WHERE id=%s'
+    data = request.json
+    sql = 'UPDATE material SET name=%(name)s WHERE id=%(id)s'
     try:
-        DB.execute_sql_command(sql, (material_id, material_name))
+        DB.execute_sql_command(sql, data)
     except Error as e:
         json = error_json(e)
         print(str(e))

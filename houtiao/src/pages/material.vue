@@ -307,7 +307,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.isLoading = true
-        this.axios.post('/api/material/remove?id=' + id).then(res => {
+        this.axios.post('/api/material/remove', {id: id}).then(res => {
           console.log('删除材料', res)
           this.$message({
             type: 'success',
