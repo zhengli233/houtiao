@@ -222,16 +222,16 @@ export default {
     }
   },
   mounted: function () {
-    this.materialList = [
-      {id: 1, name: '龙之硬币', endDate: '2020-01-14', requirementList: [{userId: 1, requiredNumber: 50, ownedNumber: 10}, {userId: 2, requiredNumber: 40, ownedNumber: 20}]},
-      {id: 2, name: '苍穹碎片', endDate: '2020-01-10', requirementList: [{userId: 2, requiredNumber: 7, ownedNumber: 0}]},
-      {id: 3, name: '辉煌的金色气息', endDate: '2020-01-14', requirementList: []}
-    ]
-    this.userList = [
-      {id: 1, name: '华晓澄'},
-      {id: 2, name: '李征'}
-    ]
-    // this.search(null)
+    // this.materialList = [
+    //   {id: 1, name: '龙之硬币', endDate: '2020-01-14', requirementList: [{userId: 1, requiredNumber: 50, ownedNumber: 10}, {userId: 2, requiredNumber: 40, ownedNumber: 20}]},
+    //   {id: 2, name: '苍穹碎片', endDate: '2020-01-10', requirementList: [{userId: 2, requiredNumber: 7, ownedNumber: 0}]},
+    //   {id: 3, name: '辉煌的金色气息', endDate: '2020-01-14', requirementList: []}
+    // ]
+    // this.userList = [
+    //   {id: 1, name: '华晓澄'},
+    //   {id: 2, name: '李征'}
+    // ]
+    this.search(null)
   },
   methods: {
     // 计算结束日期与今天的差值
