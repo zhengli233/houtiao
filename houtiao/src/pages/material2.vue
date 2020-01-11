@@ -65,7 +65,7 @@
           <el-input v-model="addForm.name" clearable></el-input>
         </el-form-item>
         <el-form-item label="结束日期" prop="endDate">
-          <el-date-picker v-model="addForm.endDate" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker v-model="addForm.endDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <el-form-item class="btnBox">
           <el-button icon="el-icon-check" type="primary" @click="add()" :loading="isLoading">提交</el-button>
@@ -83,7 +83,7 @@
           <el-input v-model="editForm.name" clearable></el-input>
         </el-form-item>
         <el-form-item label="结束日期" prop="endDate">
-          <el-date-picker v-model="editForm.endDate" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker v-model="editForm.endDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
         </el-form-item>
         <el-form-item class="btnBox">
           <el-button icon="el-icon-check" type="primary" @click="edit()" :loading="isLoading">提交</el-button>
