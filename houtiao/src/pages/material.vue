@@ -4,7 +4,7 @@
     <div class="addAndSearch">
       <el-row :gutter="0">
         <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6" class="addBox">
-          <el-button icon="el-icon-plus" type="primary" @click="showAdd()" :loading="isLoading">新增</el-button>
+          <el-button icon="el-icon-plus" type="primary" @click="showAdd()" :loading="isLoading || isLoadingTable">新增</el-button>
         </el-col>
         <el-col :xs="18" :sm="18" :md="18" :lg="18" :xl="18" class="searchBox">
           <el-form :model="searchForm" class="searchForm" :rules="searchRules" ref="searchForm">
@@ -12,53 +12,77 @@
               <el-input v-model="searchForm.name" placeholder="请输入材料名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="" class="lineTwoBtn lineTwoBtnBtn">
-              <el-button icon="el-icon-search" type="primary" @click="search(searchForm.name)" :loading="isLoading">查询</el-button>
+              <el-button icon="el-icon-search" type="primary" @click="search(searchForm.name)" :loading="isLoading || isLoadingTable">查询</el-button>
             </el-form-item>
           </el-form>
         </el-col>
       </el-row>
     </div>
     <!------------------------------------------------新增查询div结束-------------------------------------------------->
-    <!------------------------------------------------列表div开始------------------------------------------------------>
-    <div class="materialAndUser">
-      <div class="materialAndUserBox" :style="{minWidth: userList.length * 410 + 230 + 'px'}">
-        <div class="userList">
-          <div class="userListItem userListItemFirst">
-            <span>&nbsp;</span>
+    <!------------------------------------------------列表开始--------------------------------------------------------->
+    <el-table :data="materialList" class="materialTable" border>
+      <el-table-column prop="name" label="材料名称" width="200" fixed="left">
+      </el-table-column>
+      <el-table-column label="结束日期" width="120" fixed="left">
+        <template slot-scope="scope">
+          <span>{{dateFormat(scope.row.endDate)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column v-for="item in userList" :label="item.name" :key="item.id" min-width="520">
+        <template slot-scope="scope">
+          <div v-if="scope.row.requirementList.find(it => it.userId === item.id) !== undefined">
+            <el-row :gutter="20">
+              <el-col :span="14">
+                <el-tag effect="dark" type="info" size="medium">需要：{{scope.row.requirementList.find(it => it.userId === item.id).requiredNumber}}个</el-tag>
+                <el-tag effect="dark" type="success" size="medium">已有：{{scope.row.requirementList.find(it => it.userId === item.id).ownedNumber}}个</el-tag>
+                <el-tag effect="dark" type="warning" size="medium" v-if="(scope.row.requirementList.find(it => it.userId === item.id).requiredNumber - scope.row.requirementList.find(it => it.userId === item.id).ownedNumber) > 0 && getDate(scope.row.endDate, scope.row.requirementList.find(it => it.userId === item.id).isFinishedToday) > 0">每日：{{Math.ceil((scope.row.requirementList.find(it => it.userId === item.id).requiredNumber - scope.row.requirementList.find(it => it.userId === item.id).ownedNumber) / getDate(scope.row.endDate, scope.row.requirementList.find(it => it.userId === item.id).isFinishedToday))}}个</el-tag>
+                <el-tag effect="dark" type="danger" size="medium" v-else>活动已结束</el-tag>
+              </el-col>
+              <el-col :span="10" align="right">
+                <el-tooltip :content="scope.row.requirementList.find(it => it.userId === item.id).isFinishedToday ? '今日已完成' : '今日未完成'" placement="top" style="margin-right: 20px;">
+                  <el-switch v-model="scope.row.requirementList.find(it => it.userId === item.id).isFinishedToday" :disabled="isLoading || isLoadingTable"></el-switch>
+                </el-tooltip>
+                <el-tooltip content="修改" placement="top">
+                  <el-button icon="el-icon-edit" type="primary" plain @click="showEditMaterial(item.id, scope.row.id, item.name, scope.row.name, scope.row.requirementList.find(it => it.userId === item.id).requiredNumber, scope.row.requirementList.find(it => it.userId === item.id).ownedNumber)" :loading="isLoading || isLoadingTable" size="mini"></el-button>
+                </el-tooltip>
+                <el-tooltip content="删除" placement="top">
+                  <el-button icon="el-icon-delete" type="danger" plain @click="delMaterial(item.id, scope.row.id)" :loading="isLoading || isLoadingTable" size="mini"></el-button>
+                </el-tooltip>
+              </el-col>
+            </el-row>
           </div>
-          <div class="userListItem" v-for="it in userList" :key="it.id" :style="{width: (innerWidth - 230 - 40) / userList.length + 'px'}">
-            <span>{{it.name}}</span>
+          <div v-else>
+            <el-row :gutter="20">
+              <el-col :span="24" align="right">
+                <el-button icon="el-icon-plus" type="primary" plain @click="showAddMaterial(item.id, scope.row.id, item.name, scope.row.name)" :loading="isLoading || isLoadingTable" size="mini"></el-button>
+              </el-col>
+            </el-row>
           </div>
-        </div>
-        <div class="materialList" v-for="item in materialList" :key="item.id">
-          <div class="materialListItem materialListItemFirst">
-            <span>{{item.name}}</span>
-            <el-button class="btn" icon="el-icon-delete" type="danger" @click="del(item.id)" :loading="isLoading" size="mini"></el-button>
-            <el-button class="btn" icon="el-icon-edit" type="primary" @click="showEdit(item.id)" :loading="isLoading" size="mini"></el-button>
-          </div>
-          <div class="materialListItem" v-for="it in userList" :key="it.id" :style="{width: (innerWidth - 230 - 40) / userList.length + 'px'}">
-            <div class="materialDetail" v-if="item.requirementList.find(i => i.userId === it.id) !== undefined">
-              <span class="title">需要：</span><el-input-number class="value" v-model="item.requirementList.find(i => i.userId === it.id).requiredNumber" :precision="0" :step="1" :min="0" :max="99999" size="mini" controls-position="right"></el-input-number>
-              <span class="title">已有：</span><el-input-number class="value" v-model="item.requirementList.find(i => i.userId === it.id).ownedNumber" :precision="0" :step="1" :min="0" :max="99999" size="mini" controls-position="right"></el-input-number>
-              <el-button class="btn" icon="el-icon-delete" type="danger" plain @click="delMaterial(it.id, item.id)" :loading="isLoading" size="mini"></el-button>
-              <el-button class="btn" icon="el-icon-edit" type="primary" plain @click="editMaterial(item.id, item.requirementList.find(i => i.userId === it.id).requiredNumber, item.requirementList.find(i => i.userId === it.id).ownedNumber, it.id)" :loading="isLoading" size="mini"></el-button>
-            </div>
-            <div class="materialDetail" v-else>
-              <el-button class="btn" icon="el-icon-plus" type="primary" plain @click="showAddMaterial(it.id, item.id, it.name, item.name)" :loading="isLoading" size="mini"></el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!------------------------------------------------列表div结束------------------------------------------------------>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" min-width="200" fixed="right">
+        <template slot-scope="scope">
+          <el-tooltip content="修改" placement="top">
+            <el-button icon="el-icon-edit" type="primary" @click="showEdit(scope.row.id)" :loading="isLoading || isLoadingTable" size="mini"></el-button>
+          </el-tooltip>
+          <el-tooltip content="删除" placement="top">
+            <el-button icon="el-icon-delete" type="danger" @click="del(scope.row.id)" :loading="isLoading || isLoadingTable" size="mini"></el-button>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!------------------------------------------------列表结束--------------------------------------------------------->
     <!------------------------------------------------新增弹窗开始----------------------------------------------------->
     <el-dialog title="新增材料" :visible.sync="addFormVisible" width="400px" center :before-close="closeAdd">
       <el-form :model="addForm" ref="addForm" :rules="addFormRules" class="dialogForm">
         <el-form-item label="材料名称" prop="name">
           <el-input v-model="addForm.name" clearable></el-input>
         </el-form-item>
+        <el-form-item label="结束日期" prop="endDate">
+          <el-date-picker v-model="addForm.endDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-form-item>
         <el-form-item class="btnBox">
-          <el-button icon="el-icon-check" type="primary" @click="add()" :loading="isLoading">提交</el-button>
+          <el-button icon="el-icon-check" type="primary" @click="add()" :loading="isLoading || isLoadingTable">提交</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -72,8 +96,11 @@
         <el-form-item label="材料名称" prop="name">
           <el-input v-model="editForm.name" clearable></el-input>
         </el-form-item>
+        <el-form-item label="结束日期" prop="endDate">
+          <el-date-picker v-model="editForm.endDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-form-item>
         <el-form-item class="btnBox">
-          <el-button icon="el-icon-check" type="primary" @click="edit()" :loading="isLoading">提交</el-button>
+          <el-button icon="el-icon-check" type="primary" @click="edit()" :loading="isLoading || isLoadingTable">提交</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -100,20 +127,49 @@
           <el-input-number class="value" v-model="addMaterialForm.ownedNumber" :precision="0" :step="1" :min="0" :max="99999" controls-position="right"></el-input-number>
         </el-form-item>
         <el-form-item class="btnBox">
-          <el-button icon="el-icon-check" type="primary" @click="addMaterial()" :loading="isLoading">提交</el-button>
+          <el-button icon="el-icon-check" type="primary" @click="addMaterial()" :loading="isLoading || isLoadingTable">提交</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
     <!------------------------------------------------新增用户材料需求弹窗结束----------------------------------------->
+    <!------------------------------------------------修改用户材料需求弹窗开始----------------------------------------->
+    <el-dialog title="修改用户材料需求" :visible.sync="editMaterialFormVisible" width="400px" center :before-close="closeEditMaterial">
+      <el-form :model="editMaterialForm" ref="editMaterialForm" class="dialogForm">
+        <el-form-item label="userId" prop="userId" v-show="false">
+          <el-input v-model="editMaterialForm.userId" disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="materialId" prop="materialId" v-show="false">
+          <el-input v-model="editMaterialForm.materialId" disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="用户姓名" prop="userName">
+          <el-input v-model="editMaterialForm.userName" disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="材料名称" prop="materialName">
+          <el-input v-model="editMaterialForm.materialName" disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item label="需要" prop="requiredNumber">
+          <el-input-number class="value" v-model="editMaterialForm.requiredNumber" :precision="0" :step="1" :min="0" :max="99999" controls-position="right"></el-input-number>
+        </el-form-item>
+        <el-form-item label="已有" prop="ownedNumber">
+          <el-input-number class="value" v-model="editMaterialForm.ownedNumber" :precision="0" :step="1" :min="0" :max="99999" controls-position="right"></el-input-number>
+        </el-form-item>
+        <el-form-item class="btnBox">
+          <el-button icon="el-icon-check" type="primary" @click="editMaterial()" :loading="isLoading || isLoadingTable">提交</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <!------------------------------------------------修改用户材料需求弹窗结束----------------------------------------->
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   data: function () {
     return {
-      innerWidth: window.innerWidth,
       isLoading: false,
+      isLoadingTable: false,
       // 搜索
       searchForm: {
         name: null
@@ -130,24 +186,32 @@ export default {
       // 新增材料
       addFormVisible: false,
       addForm: {
-        name: null
+        name: null,
+        endDate: null
       },
       addFormRules: {
         name: [
           { required: true, message: '请输入材料名称', trigger: 'blur' },
           { max: 20, message: '材料名称在20个字符以内', trigger: 'blur' }
+        ],
+        endDate: [
+          { required: true, message: '请选择结束日期', trigger: 'blur' }
         ]
       },
       // 修改材料
       editFormVisible: false,
       editForm: {
         id: 0,
-        name: null
+        name: null,
+        endDate: null
       },
       editFormRules: {
         name: [
           { required: true, message: '请输入材料名称', trigger: 'blur' },
           { max: 20, message: '材料名称在20个字符以内', trigger: 'blur' }
+        ],
+        endDate: [
+          { required: true, message: '请选择结束日期', trigger: 'blur' }
         ]
       },
       // 新增用户材料需求
@@ -159,41 +223,55 @@ export default {
         materialName: null,
         requiredNumber: 0,
         ownedNumber: 0
+      },
+      // 新增用户材料需求
+      editMaterialFormVisible: false,
+      editMaterialForm: {
+        userId: null,
+        materialId: null,
+        userName: null,
+        materialName: null,
+        requiredNumber: 0,
+        ownedNumber: 0
       }
     }
   },
   mounted: function () {
     this.search(null)
-    this.$nextTick(() => {
-      window.onresize = () => {
-        return (() => {
-          this.innerWidth = window.innerWidth
-        })()
-      }
-    })
   },
   methods: {
+    // 日期格式
+    dateFormat: function (date) {
+      return moment(date).format('YYYY-MM-DD')
+    },
+    // 计算结束日期与今天的差值
+    getDate: function (endDate, isFinishedToday) {
+      if (isFinishedToday) {
+        return moment(endDate).diff(moment(new Date()), 'days')
+      } else {
+        return moment(endDate).diff(moment(new Date()), 'days') + 1
+      }
+    },
     // 查询材料列表
     search: function (name) {
       this.$refs['searchForm'].validate((valid) => {
         if (valid) {
           this.searchName = name
-          this.isLoading = true
+          this.isLoadingTable = true
           this.axios.get('/api/material/list?name=' + this.searchName).then(res => {
             console.log('材料列表', res)
+            for (let i = 0; i < res.data.data.materialList.length; i++) {
+              for (let j = 0; j < res.data.data.materialList[i].requirementList.length; j++) {
+                res.data.data.materialList[i].requirementList[j].isFinishedToday = false
+              }
+            }
             this.materialList = res.data.data.materialList
             this.userList = res.data.data.userList
-            this.isLoading = false
+            this.isLoadingTable = false
           }).catch(err => {
             console.log('材料列表出错', err)
-            this.isLoading = false
+            this.isLoadingTable = false
           })
-          // this.materialList = [
-          //   {id: 1, name: '反物质粒子', requirementList: [{userId: 1, requiredNumber: 100, ownedNumber: 50}, {userId: 2, requiredNumber: 120, ownedNumber: 70}]},
-          //   {id: 2, name: '苍穹碎片', requirementList: [{userId: 1, requiredNumber: 300, ownedNumber: 200}]},
-          //   {id: 3, name: '精炼的时空石', requirementList: [{userId: 1, requiredNumber: 10, ownedNumber: 6}, {userId: 2, requiredNumber: 8, ownedNumber: 4}]}
-          // ]
-          // this.userList = [{id: 1, name: 'lz'}, {id: 2, name: 'hxc'}]
         } else {
           this.$message({
             type: 'error',
@@ -254,6 +332,7 @@ export default {
         this.$nextTick(() => { // resetFields初始化到第一次打开dialog时里面的form表单里的值，所以先渲染form表单，后改变值，这样resetFields后未空表单
           this.editForm.id = res.data.data.id
           this.editForm.name = res.data.data.name
+          this.editForm.endDate = moment(res.data.data.endDate).format('YYYY-MM-DD')
         })
         this.isLoading = false
       }).catch(err => {
@@ -374,22 +453,6 @@ export default {
         }
       })
     },
-    // 修改用户材料需求
-    editMaterial: function (id, required, owned, userId) {
-      this.isLoading = true
-      this.axios.post('/api/material/updateRequirement', {materialId: id, requiredNumber: required, ownedNumber: owned, userId: userId}).then(res => {
-        console.log('修改用户材料需求', res)
-        this.$message({
-          type: 'success',
-          message: '修改成功'
-        })
-        this.search(this.searchName)
-        this.isLoading = false
-      }).catch(err => {
-        console.log('修改用户材料需求出错', err)
-        this.isLoading = false
-      })
-    },
     // 删除用户材料需求
     delMaterial: function (userId, materialId) {
       this.$confirm('确认删除这条记录吗？', '提示', {
@@ -416,6 +479,69 @@ export default {
           message: '删除已取消'
         })
       })
+    },
+    // 显示修改用户材料需求弹窗
+    showEditMaterial: function (userId, materialId, userName, materialName, requiredNumber, ownedNumber) {
+      this.editMaterialFormVisible = true
+      this.$nextTick(() => { // resetFields初始化到第一次打开dialog时里面的form表单里的值，所以先渲染form表单，后改变值，这样resetFields后未空表单
+        this.editMaterialForm.userId = userId
+        this.editMaterialForm.materialId = materialId
+        this.editMaterialForm.userName = userName
+        this.editMaterialForm.materialName = materialName
+        this.editMaterialForm.requiredNumber = requiredNumber
+        this.editMaterialForm.ownedNumber = ownedNumber
+      })
+    },
+    // 关闭修改用户材料需求弹窗
+    closeEditMaterial: function (done) {
+      this.$confirm('确认关闭吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$refs['editMaterialForm'].resetFields()
+        done()
+      }).catch(() => {})
+    },
+    // 修改用户材料需求
+    editMaterial: function () { // id, required, owned, userId
+      this.$refs['editMaterialForm'].validate((valid) => {
+        if (valid) {
+          this.isLoading = true
+          this.axios.post('/api/material/updateRequirement', this.editMaterialForm).then(res => {
+            console.log('修改用户材料需求', res)
+            this.$message({
+              type: 'success',
+              message: '修改成功'
+            })
+            this.$refs['editMaterialForm'].resetFields()
+            this.editMaterialFormVisible = false
+            this.search(this.searchName)
+            this.isLoading = false
+          }).catch(err => {
+            console.log('修改用户材料需求出错', err)
+            this.isLoading = false
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '提交格式错误'
+          })
+        }
+      })
+      // this.isLoading = true
+      // this.axios.post('/api/material/updateRequirement', {materialId: id, requiredNumber: required, ownedNumber: owned, userId: userId}).then(res => {
+      //   console.log('修改用户材料需求', res)
+      //   this.$message({
+      //     type: 'success',
+      //     message: '修改成功'
+      //   })
+      //   this.search(this.searchName)
+      //   this.isLoading = false
+      // }).catch(err => {
+      //   console.log('修改用户材料需求出错', err)
+      //   this.isLoading = false
+      // })
     }
   }
 }
