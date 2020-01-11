@@ -19,7 +19,7 @@ def error_json(e):
 @APP.route('/material/get', methods=['GET'])
 def get_material_name():
     material_id = request.args.get('id')
-    sql = 'SELECT name from material WHERE id=%s'
+    sql = 'SELECT * from material WHERE id=%s'
     try:
         DB.execute_sql_command(sql, material_id)
     except Error as e:
@@ -33,7 +33,8 @@ def get_material_name():
         'errorMessage': '',
         'data': {
             'id': material_id,
-            'name': result['name']
+            'name': result['name'],
+            'endDate': result['end_date']
         }
     }
     return jsonify(json)
@@ -98,7 +99,8 @@ def get_material_list():
             json = {
                 'id': material['id'],
                 'name': material['name'],
-                'requirementList': requirement_list,
+                'endDate': material['end_date'],
+                'requirementList': requirement_list
             }
             material_list.append(json)
 
@@ -116,7 +118,7 @@ def get_material_list():
 @APP.route('/material/update', methods=['POST'])
 def update_material_name():
     data = request.json
-    sql = 'UPDATE material SET name=%(name)s WHERE id=%(id)s'
+    sql = 'UPDATE material SET name=%(name)s, end_date=%(endDate)s WHERE id=%(id)s'
     try:
         DB.execute_sql_command(sql, data)
     except Error as e:
@@ -186,9 +188,9 @@ def remove_material():
 @APP.route('/material/save', methods=['POST'])
 def add_material():
     material_name = request.json
-    sql = 'INSERT INTO material (name) VALUES (%s)'
+    sql = 'INSERT INTO material (name, end_date) VALUES (%(name)s, %(endDate)s)'
     try:
-        DB.execute_sql_command(sql, material_name['name'])
+        DB.execute_sql_command(sql, material_name)
     except Error as e:
         json = error_json(e)
         print(str(e))
