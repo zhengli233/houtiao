@@ -247,9 +247,9 @@ export default {
     // 计算结束日期与今天的差值
     getDate: function (endDate, isFinishedToday) {
       if (isFinishedToday) {
-        return moment(endDate).diff(moment(new Date()), 'days')
+        return moment(moment(endDate).format('YYYY-MM-DD')).diff(moment(moment(new Date()).format('YYYY-MM-DD')), 'days') - 1
       } else {
-        return moment(endDate).diff(moment(new Date()), 'days') + 1
+        return moment(moment(endDate).format('YYYY-MM-DD')).diff(moment(moment(new Date()).format('YYYY-MM-DD')), 'days')
       }
     },
     // 查询材料列表
