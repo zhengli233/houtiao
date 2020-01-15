@@ -16,6 +16,13 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+// 生产环境走直接走后端接口
+if (process.env.NODE_ENV == 'production') {
+  axios.defaults.baseURL = 'http://52.220.251.13:8000'
+} else {
+  store.state.api = '/api'
+}
+
 // 路由拦截
 router.beforeEach((to, from, next) => {
   store.commit('clearToken') // 取消请求

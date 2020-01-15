@@ -258,7 +258,7 @@ export default {
         if (valid) {
           this.searchName = name
           this.isLoadingTable = true
-          this.axios.get('/api/material/list?name=' + this.searchName).then(res => {
+          this.axios.get(this.$store.state.api + '/material/list?name=' + this.searchName).then(res => {
             console.log('材料列表', res)
             for (let i = 0; i < res.data.data.materialList.length; i++) {
               for (let j = 0; j < res.data.data.materialList[i].requirementList.length; j++) {
@@ -301,7 +301,7 @@ export default {
       this.$refs['addForm'].validate((valid) => {
         if (valid) {
           this.isLoading = true
-          this.axios.post('/api/material/save', this.addForm).then(res => {
+          this.axios.post(this.$store.state.api + '/material/save', this.addForm).then(res => {
             console.log('新增', res)
             this.$message({
               type: 'success',
@@ -326,7 +326,7 @@ export default {
     // 显示修改材料弹窗
     showEdit: function (id) {
       this.isLoading = true
-      this.axios.get('/api/material/get?id=' + id).then(res => {
+      this.axios.get(this.$store.state.api + '/material/get?id=' + id).then(res => {
         console.log('查询单个材料', res)
         this.editFormVisible = true
         this.$nextTick(() => { // resetFields初始化到第一次打开dialog时里面的form表单里的值，所以先渲染form表单，后改变值，这样resetFields后未空表单
@@ -356,7 +356,7 @@ export default {
       this.$refs['editForm'].validate((valid) => {
         if (valid) {
           this.isLoading = true
-          this.axios.post('/api/material/update', this.editForm).then(res => {
+          this.axios.post(this.$store.state.api + '/material/update', this.editForm).then(res => {
             console.log('修改材料', res)
             this.$message({
               type: 'success',
@@ -386,7 +386,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.isLoading = true
-        this.axios.post('/api/material/remove', {id: id}).then(res => {
+        this.axios.post(this.$store.state.api + '/material/remove', {id: id}).then(res => {
           console.log('删除材料', res)
           this.$message({
             type: 'success',
@@ -431,7 +431,7 @@ export default {
       this.$refs['addMaterialForm'].validate((valid) => {
         if (valid) {
           this.isLoading = true
-          this.axios.post('/api/material/saveRequirement', this.addMaterialForm).then(res => {
+          this.axios.post(this.$store.state.api + '/material/saveRequirement', this.addMaterialForm).then(res => {
             console.log('新增用户材料需求', res)
             this.$message({
               type: 'success',
@@ -461,7 +461,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.isLoading = true
-        this.axios.post('/api/material/removeRequirement', {userId: userId, materialId: materialId}).then(res => {
+        this.axios.post(this.$store.state.api + '/material/removeRequirement', {userId: userId, materialId: materialId}).then(res => {
           console.log('删除用户材料需求', res)
           this.$message({
             type: 'success',
@@ -508,7 +508,7 @@ export default {
       this.$refs['editMaterialForm'].validate((valid) => {
         if (valid) {
           this.isLoading = true
-          this.axios.post('/api/material/updateRequirement', this.editMaterialForm).then(res => {
+          this.axios.post(this.$store.state.api + '/material/updateRequirement', this.editMaterialForm).then(res => {
             console.log('修改用户材料需求', res)
             this.$message({
               type: 'success',

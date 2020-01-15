@@ -1,10 +1,11 @@
 from flask import Flask, jsonify, request
 from mysql import MySQL, Error
+from flask_cors import CORS
 
 APP = Flask(
     __name__
 )
-
+CORS(APP, resources={r'*': {'origins': r'http://qztejm.coding-pages.com/*'}})
 DB = MySQL()
 
 def error_json(e):
