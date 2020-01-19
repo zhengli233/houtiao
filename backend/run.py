@@ -5,7 +5,7 @@ from flask_cors import CORS
 APP = Flask(
     __name__
 )
-CORS(APP, resources={r'*': {'origins': r'http://qztejm.coding-pages.com/*'}})
+CORS(APP, resources={r'*': {'origins': r'https://(www.)?houtiao.club/*'}})
 DB = MySQL()
 
 def error_json(e):
