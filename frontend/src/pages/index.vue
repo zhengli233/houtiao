@@ -12,7 +12,7 @@
           <el-button type="primary" icon="el-icon-receiving" @click="goPage('material')">材料</el-button>
         </div>
         <div class="btnBox">
-          <el-button type="primary" icon="el-icon-place" @click="goPage('houtiao')">猴调一下</el-button>
+          <el-button type="primary" icon="el-icon-edit" @click="goExternal('https://blog.houtiao.club')">博客</el-button>
         </div>
       </el-col>
     </el-row>
@@ -24,6 +24,9 @@ export default {
   methods: {
     goPage: function (name) {
       this.$router.push({name: name})
+    },
+    goExternal: function (url) {
+      window.location.href = url
     }
   }
 }

@@ -17,8 +17,8 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 // 生产环境走直接走后端接口
-if (process.env.NODE_ENV == 'production') {
-  axios.defaults.baseURL = 'http://52.220.251.13:8000'
+if (process.env.NODE_ENV === 'production') {
+  axios.defaults.baseURL = 'https://api.houtiao.club/'
 } else {
   store.state.api = '/api'
 }
