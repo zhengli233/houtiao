@@ -16,6 +16,13 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+// 生产环境走直接走后端接口
+if (process.env.NODE_ENV === 'production') {
+  axios.defaults.baseURL = 'https://api.houtiao.club/'
+} else {
+  store.state.api = '/api'
+}
+
 // 路由拦截
 router.beforeEach((to, from, next) => {
   store.commit('clearToken') // 取消请求

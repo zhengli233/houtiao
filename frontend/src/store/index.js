@@ -6,7 +6,8 @@ Vue.use(Vuex)
 // 要设置的全局访问的state对象
 const state = {
   // token: '',
-  cancelTokenArr: []
+  cancelTokenArr: [],
+  api: ''
 }
 
 const getters = { // 实时监听state值的变化(最新状态)
