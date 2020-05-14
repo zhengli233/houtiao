@@ -5,9 +5,9 @@
         <div class="btnBox">
           <el-button type="primary" icon="el-icon-menu" @click="goPage('activity')">活动</el-button>
         </div>
-        <div class="btnBox">
-          <el-button type="primary" icon="el-icon-s-flag" @click="goPage('target')">目标</el-button>
-        </div>
+<!--        <div class="btnBox">-->
+<!--          <el-button type="primary" icon="el-icon-s-flag" @click="goPage('target')">目标</el-button>-->
+<!--        </div>-->
         <div class="btnBox">
           <el-button type="primary" icon="el-icon-receiving" @click="goPage('material')">材料</el-button>
         </div>

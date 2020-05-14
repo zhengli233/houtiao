@@ -165,3 +165,16 @@
   background: #f5f7fa;
 }
 /*material css by tornorroyv*/
+/*activity css by tornorroyv*/
+.acTable {
+  width: 100%;
+}
+.acTable /deep/ thead tr, .acTable /deep/ thead th {
+  background-color: #409eff;
+  color: #fff;
+  border-color: transparent;
+}
+.acTable /deep/ tbody tr, .acTable /deep/ tbody td {
+  padding: 3px 0;
+}
+/*activity css by tornorroyv*/
