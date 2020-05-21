@@ -13,7 +13,7 @@
               <el-col :span="3">{{scope.row.name}}</el-col>
               <el-col :span="4"><el-rate v-model="scope.row.level" disabled text-color="#ff9900"></el-rate></el-col>
               <el-col :span="3">{{scope.row.startDate.replace(/\//g, '-').substring(5, 10)}} - {{scope.row.endDate.replace(/\//g, '-').substring(5, 10)}}</el-col>
-              <el-col :span="4" style="text-align: left; padding-left: 50px;">{{scope.row.content}}</el-col>
+              <el-col :span="14" style="text-align: left; padding-left: 50px;">{{scope.row.content}}</el-col>
             </el-row>
           </div>
         </template>
@@ -43,15 +43,15 @@ export default {
         {id: 14, name: '攻坚商店', weekday: [4, 5], type: '商店'},
         {id: 15, name: '公会商店', weekday: [4, 5], type: '商店'},
         {id: 16, name: '探秘瓦尔哈拉', weekday: [], type: '活动', level: 3, startDate: '2020/05/07', endDate: '2020/06/04', content: 'buff宝珠，附魔等'},
-        {id: 17, name: '积分商城', weekday: [], type: '活动', level: 1, startDate: '2020/04/23', endDate: '2020/06/04', content: '通行证、赛丽亚的灿烂幸运等'},
+        {id: 17, name: '积分商城', weekday: [], type: '活动', level: 2.5, startDate: '2020/04/23', endDate: '2020/06/04', content: 'buff光环、通行证、赛丽亚的灿烂幸运等'},
         {id: 18, name: '再战安徒恩', weekday: [], type: '活动', level: 4, startDate: '2020/05/21', endDate: '2020/07/16', content: '引导石，85ss套，100ss武器，灼炎荒古装扮'},
         {id: 19, name: '冒险家回归', weekday: [], type: '活动', level: 3, startDate: '2020/05/21', endDate: '2020/07/16', content: '12期天空，+10增幅券等'},
         {id: 20, name: '强者之路：抉择', weekday: [], type: '活动', level: 3, startDate: '2020/05/21', endDate: '2020/07/16', content: '新增匹配模式，武器装扮，光环，护石符文，袖珍罐等'},
         {id: 21, name: '逆转的次元', weekday: [], type: '活动', level: 2, startDate: '2020/05/21', endDate: '2020/06/18', content: '动漫联动远古&异界地下城，附魔，灵魂武器，称号，边框等'},
-        {id: 22, name: '幸运卡券', weekday: [], type: '活动', level: 1, startDate: '2020/05/21', endDate: '2020/06/04', content: '引导石，强化券'},
-        {id: 23, name: '智慧之光', weekday: [], type: '活动', level: 1, startDate: '2020/05/21', endDate: '2020/06/18', content: '引导石'},
+        {id: 22, name: '幸运卡券', weekday: [], type: '活动', level: 5, startDate: '2020/05/21', endDate: '2020/06/04', content: '引导石，强化券'},
+        {id: 23, name: '智慧之光', weekday: [], type: '活动', level: 5, startDate: '2020/05/21', endDate: '2020/06/18', content: '引导石'},
         {id: 24, name: '公会你我他', weekday: [], type: '活动', level: 1, startDate: '2020/05/21', endDate: '2020/06/04', content: '公会硬币'},
-        {id: 25, name: '寻宝乐翻天', weekday: [], type: '活动', level: 1, startDate: '2020/05/21', endDate: '2020/06/18', content: '刮刮乐附魔'}
+        {id: 25, name: '寻宝乐翻天', weekday: [], type: '活动', level: 2, startDate: '2020/05/21', endDate: '2020/06/18', content: '刮刮乐附魔'}
       ]
     }
   },
